@@ -7,8 +7,7 @@ A free, all-in-one dashboard that helps high school juniors manage their grades,
 </p>
 
 <p align="center">
-<a href="https://YOUR-USERNAME.github.io/launchpad/">Live Demo</a> ·
-<a href="https://github.com/YOUR-USERNAME/launchpad/issues">Report a Bug</a>
+<a href="[https://YOUR-USERNAME.github.io/launchpad/](https://nt-12354.github.io/VERSITAS-AI-COMP---NAHOM-TAYE-BELACHEW/)">Live Demo</a> ·
 </p>
 
 ---
@@ -42,7 +41,7 @@ Use it online: open the Live Demo link above.
 
 Run it on your computer:
 
-<pre><code>git clone https://github.com/YOUR-USERNAME/launchpad.git
+<pre><code>git clone [https://github.com/YOUR-USERNAME/launchpad.git](https://nt-12354.github.io/VERSITAS-AI-COMP---NAHOM-TAYE-BELACHEW/)
 cd launchpad</code></pre>
 
 Then open `index.html` in any browser.
