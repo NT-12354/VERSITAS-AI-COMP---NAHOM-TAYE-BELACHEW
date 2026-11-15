@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Launchpad — Junior Year, Handled</title>
+<style>
+  :root{
+    --bg:#0b0d17; --card:#141829; --card2:#1b2038; --line:#262c4a;
+    --text:#eef0ff; --muted:#9aa2c7;
+    --a:#7c5cff; --b:#22d3ee; --good:#34d399; --warn:#fbbf24; --bad:#fb7185;
+    --grad:linear-gradient(135deg,var(--a),var(--b));
+    --r:18px;
+  }
+  *{box-sizing:border-box;margin:0}
+  html{scroll-behavior:smooth}
+  body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.5;
+    background-image:radial-gradient(circle at 15% -10%,#2a1f6b55,transparent 40%),radial-gradient(circle at 90% 10%,#0e7490440,transparent 40%);
+    background-attachment:fixed}
+  a{color:inherit;text-decoration:none}
+  nav{position:sticky;top:0;z-index:10;backdrop-filter:blur(14px);background:#0b0d17cc;border-bottom:1px solid var(--line)}
+  .nav-in{max-width:1100px;margin:auto;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+  .logo{font-weight:800;font-size:1.2rem;letter-spacing:-.02em}
+  .logo span{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .links{display:flex;gap:18px;font-size:.9rem;color:var(--muted);flex-wrap:wrap}
+  .links a:hover{color:var(--text)}
+  main{max-width:1100px;margin:auto;padding:0 20px 80px}
+  .hero{padding:80px 0 50px;text-align:center}
+  .pill{display:inline-block;padding:6px 14px;border:1px solid var(--line);border-radius:99px;font-size:.8rem;color:var(--muted);background:#ffffff08}
+  h1{font-size:clamp(2.4rem,7vw,4.6rem);line-height:1.05;letter-spacing:-.04em;margin:20px 0 16px;font-weight:800}
+  h1 em{font-style:normal;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .hero p{color:var(--muted);max-width:620px;margin:auto;font-size:1.1rem}
+  .cta{margin-top:28px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+  .btn{border:0;cursor:pointer;font:inherit;font-weight:600;padding:12px 22px;border-radius:12px;color:#fff;background:var(--grad);transition:.2s}
+  .btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px #7c5cff55}
+  .btn.ghost{background:transparent;border:1px solid var(--line);color:var(--text)}
+  .btn.ghost:hover{box-shadow:none;border-color:var(--a)}
+  .btn.sm{padding:8px 14px;font-size:.85rem;border-radius:10px}
+  .countdown{display:flex;justify-content:center;gap:12px;margin-top:44px;flex-wrap:wrap}
+  .cd{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 18px;min-width:84px}
+  .cd b{display:block;font-size:2rem;font-variant-numeric:tabular-nums}
+  .cd small{color:var(--muted);font-size:.75rem;text-transform:uppercase;letter-spacing:.1em}
+  .cd-label{color:var(--muted);font-size:.85rem;margin-top:12px}
+  section{padding-top:70px}
+  .sec-h{margin-bottom:22px}
+  .sec-h h2{font-size:1.9rem;letter-spacing:-.03em}
+  .sec-h p{color:var(--muted)}
+  .grid{display:grid;gap:20px}
+  .g2{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:24px}
+  .card h3{font-size:1.05rem;margin-bottom:14px}
+  input,select{font:inherit;color:var(--text);background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;outline:none;min-width:0}
+  input:focus,select:focus{border-color:var(--a)}
+  label{font-size:.8rem;color:var(--muted);display:block;margin-bottom:4px}
+  .row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+  .row>div{flex:1;min-width:110px}
+  .row input,.row select{width:100%}
+
+  /* GPA */
+  .gpa-top{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:18px}
+  .stat{flex:1;min-width:150px;background:var(--card2);border-radius:14px;padding:16px;border:1px solid var(--line)}
+  .stat small{color:var(--muted);font-size:.78rem;text-transform:uppercase;letter-spacing:.08em}
+  .stat b{display:block;font-size:2.4rem;letter-spacing:-.03em;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .course{display:grid;grid-template-columns:2fr 1fr 1.2fr .8fr auto;gap:8px;margin-bottom:8px}
+  .course input,.course select{width:100%}
+  .x{background:transparent;border:0;color:var(--muted);cursor:pointer;font-size:1.2rem;padding:0 8px;border-radius:8px}
+  .x:hover{color:var(--bad)}
+  .hint{font-size:.85rem;color:var(--muted);margin-top:12px}
+  @media(max-width:640px){.course{grid-template-columns:1fr 1fr}.course .x{justify-self:end}}
+
+  /* Result */
+  .result{margin-top:16px;padding:16px;border-radius:14px;background:var(--card2);border:1px solid var(--line);font-size:1.05rem;min-height:60px}
+  .result b{font-size:1.6rem}
+
+  /* Timer */
+  .timer{text-align:center}
+  .ring{position:relative;width:220px;height:220px;margin:6px auto 16px}
+  .ring svg{transform:rotate(-90deg)}
+  .ring circle{fill:none;stroke-width:10}
+  .ring .bg{stroke:var(--card2)}
+  .ring .fg{stroke:url(#g);stroke-linecap:round;transition:stroke-dashoffset .5s linear}
+  .time{position:absolute;inset:0;display:grid;place-items:center;font-size:2.8rem;font-weight:700;font-variant-numeric:tabular-nums}
+  .modes{display:flex;gap:8px;justify-content:center;margin-bottom:16px}
+  .mode{background:var(--card2);border:1px solid var(--line);color:var(--muted);padding:6px 14px;border-radius:99px;cursor:pointer;font:inherit;font-size:.85rem}
+  .mode.on{color:#fff;border-color:var(--a);background:#7c5cff33}
+  .timer .row{justify-content:center}
+  .streak{margin-top:16px;color:var(--muted);font-size:.9rem}
+  .streak b{color:var(--warn)}
+
+  /* Colleges */
+  .col-list{display:grid;gap:10px;margin-top:16px}
+  .col{display:flex;align-items:center;gap:12px;background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+  .tag{font-size:.7rem;font-weight:700;padding:4px 10px;border-radius:99px;text-transform:uppercase;letter-spacing:.06em}
+  .Reach{background:#fb718522;color:var(--bad)} .Target{background:#fbbf2422;color:var(--warn)} .Safety{background:#34d39922;color:var(--good)}
+  .col .n{flex:1;font-weight:600}
+  .col .d{font-size:.8rem;color:var(--muted);text-align:right}
+  .balance{display:flex;height:10px;border-radius:99px;overflow:hidden;background:var(--card2);margin-top:16px}
+  .balance i{display:block;transition:.4s}
+
+  /* Roadmap */
+  .phases{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+  .phase h3{display:flex;justify-content:space-between}
+  .phase h3 span{font-size:.8rem;color:var(--muted);font-weight:400}
+  .check{display:flex;gap:10px;align-items:flex-start;padding:7px 0;cursor:pointer;font-size:.93rem}
+  .check input{accent-color:var(--a);width:18px;height:18px;margin-top:2px;flex-shrink:0}
+  .check.done span{color:var(--muted);text-decoration:line-through}
+  .bar{height:12px;background:var(--card2);border-radius:99px;overflow:hidden;margin-bottom:8px}
+  .bar i{display:block;height:100%;background:var(--grad);width:0;transition:.5s}
+  footer{text-align:center;color:var(--muted);padding:50px 20px;border-top:1px solid var(--line);font-size:.9rem}
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--card);border:1px solid var(--a);padding:12px 20px;border-radius:12px;transition:.3s;z-index:20}
+  .toast.show{transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<nav><div class="nav-in">
+  <a href="#top" class="logo">🚀 Launch<span>pad</span></a>
+  <div class="links">
+    <a href="#gpa">GPA Lab</a><a href="#final">Final Calc</a><a href="#focus">Focus</a><a href="#colleges">Colleges</a><a href="#roadmap">Roadmap</a>
+  </div>
+</div></nav>
+
+<main id="top">
+  <header class="hero">
+    <span class="pill">Free • No sign-up • Your data never leaves your device</span>
+    <h1>Junior year is the big one.<br><em>Run it like mission control.</em></h1>
+    <p>Grades, finals, focus time, college list, and a year-long checklist, all in one place, built by a student, for students.</p>
+    <div class="cta">
+      <a class="btn" href="#gpa">Start with my GPA</a>
+      <a class="btn ghost" href="#roadmap">See the roadmap</a>
+    </div>
+    <div class="countdown" id="cd"></div>
+    <div class="cd-label">until senior year begins (Aug 25) — make it count.</div>
+  </header>
+
+  <!-- GPA -->
+  <section id="gpa">
+    <div class="sec-h"><h2>📊 GPA Lab</h2><p>Weighted and unweighted, live. Change any grade to see what-if scenarios.</p></div>
+    <div class="card">
+      <div class="gpa-top">
+        <div class="stat"><small>Unweighted</small><b id="uw">0.00</b></div>
+        <div class="stat"><small>Weighted</small><b id="w">0.00</b></div>
+        <div class="stat"><small>Credits</small><b id="cr">0</b></div>
+      </div>
+      <div id="courses"></div>
+      <div class="row" style="margin-top:12px">
+        <button class="btn sm" id="addCourse">+ Add course</button>
+        <button class="btn sm ghost" id="clearCourses">Clear all</button>
+      </div>
+      <p class="hint">Honors adds +0.5 and AP/IB adds +1.0 to weighted GPA. Check your school's scale, since it may differ.</p>
+    </div>
+  </section>
+
+  <!-- FINAL -->
+  <section id="final">
+    <div class="sec-h"><h2>🎯 "What do I need on the final?"</h2><p>The question everyone asks at 11 PM. Answered.</p></div>
+    <div class="grid g2">
+      <div class="card">
+        <div class="row">
+          <div><label>Current grade (%)</label><input type="number" id="fc" value="88" min="0" max="150"></div>
+          <div><label>Final's weight (%)</label><input type="number" id="fw" value="20" min="1" max="100"></div>
+          <div><label>Goal grade (%)</label><input type="number" id="fg" value="90" min="0" max="150"></div>
+        </div>
+        <div class="result" id="fr"></div>
+      </div>
+      <div class="card">
+        <h3>How it works</h3>
+        <p class="hint" style="margin:0">needed = (goal − current × (1 − weight)) ÷ weight<br><br>If the number is over 100, you'll need extra credit or a more realistic goal. If it's under 0, you've already got it locked in. 🎉</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOCUS -->
+  <section id="focus">
+    <div class="sec-h"><h2>⏱️ Focus Timer</h2><p>Pomodoro sessions with a daily streak. Phone down, timer on.</p></div>
+    <div class="grid g2">
+      <div class="card timer">
+        <div class="modes" id="modes"></div>
+        <div class="ring">
+          <svg width="220" height="220" viewBox="0 0 220 220">
+            <defs><linearGradient id="g"><stop offset="0" stop-color="#7c5cff"/><stop offset="1" stop-color="#22d3ee"/></linearGradient></defs>
+            <circle class="bg" cx="110" cy="110" r="100"/>
+            <circle class="fg" id="fgc" cx="110" cy="110" r="100" stroke-dasharray="628.3" stroke-dashoffset="0"/>
+          </svg>
+          <div class="time" id="time">25:00</div>
+        </div>
+        <div class="row">
+          <button class="btn" id="startBtn" style="min-width:110px">Start</button>
+          <button class="btn ghost" id="resetBtn">Reset</button>
+        </div>
+        <div class="streak">Sessions today: <b id="sessToday">0</b> • Day streak: <b id="streak">0</b> 🔥</div>
+      </div>
+      <div class="card">
+        <h3>What are you working on?</h3>
+        <input id="task" placeholder="e.g. AP Chem Unit 6 review" style="width:100%">
+        <p class="hint">Tip: after 4 focus sessions, take a long break. Your brain consolidates what you studied while you rest.</p>
+        <h3 style="margin-top:22px">Total focus time</h3>
+        <div class="stat"><b id="totalMin">0</b><small>minutes all-time</small></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COLLEGES -->
+  <section id="colleges">
+    <div class="sec-h"><h2>🎓 College List</h2><p>Build a balanced list and never miss a deadline.</p></div>
+    <div class="card">
+      <div class="row">
+        <div style="flex:2"><label>College</label><input id="cn" placeholder="e.g. University of Michigan"></div>
+        <div><label>Category</label><select id="cc"><option>Reach</option><option selected>Target</option><option>Safety</option></select></div>
+        <div><label>Deadline</label><input type="date" id="cd2"></div>
+        <div style="flex:0"><button class="btn" id="addCol">Add</button></div>
+      </div>
+      <div class="balance" id="bal"></div>
+      <p class="hint" id="balHint"></p>
+      <div class="col-list" id="colList"></div>
+    </div>
+  </section>
+
+  <!-- ROADMAP -->
+  <section id="roadmap">
+    <div class="sec-h"><h2>🗺️ The Junior Year Roadmap</h2><p>Everything worth doing, in order. Check things off as you go.</p></div>
+    <div class="card" style="margin-bottom:20px">
+      <div class="bar"><i id="pbar"></i></div>
+      <small style="color:var(--muted)" id="ptxt"></small>
+    </div>
+    <div class="grid phases" id="phases"></div>
+  </section>
+</main>
+
+<footer>Built with ☕ and procrastination by a high school junior. Save this page, since everything is stored in your browser.</footer>
+<div class="toast" id="toast"></div>
+
+<script>
+const $ = s => document.querySelector(s);
+const esc = s => s.replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const load = (k, d) => { try { return JSON.parse(localStorage.getItem('lp_'+k)) ?? d } catch { return d } };
+const save = (k, v) => localStorage.setItem('lp_'+k, JSON.stringify(v));
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500)}
+
+/* ---------- Countdown ---------- */
+function nextAug25(){const n=new Date();let d=new Date(n.getFullYear(),7,25);if(d<n)d=new Date(n.getFullYear()+1,7,25);return d}
+const target = nextAug25();
+function tick(){
+  let s = Math.max(0, Math.floor((target - new Date())/1000));
+  const d=Math.floor(s/86400), h=Math.floor(s%86400/3600), m=Math.floor(s%3600/60); s%=60;
+  $('#cd').innerHTML = [[d,'days'],[h,'hours'],[m,'min'],[s,'sec']].map(([v,l])=>`<div class="cd"><b>${String(v).padStart(2,'0')}</b><small>${l}</small></div>`).join('');
+}
+tick(); setInterval(tick,1000);
+
+/* ---------- GPA ---------- */
+const GRADES = {'A+':4.0,'A':4.0,'A-':3.7,'B+':3.3,'B':3.0,'B-':2.7,'C+':2.3,'C':2.0,'C-':1.7,'D':1.0,'F':0};
+const LEVELS = {Regular:0, Honors:0.5, 'AP / IB':1.0};
+let courses = load('courses', [
+  {n:'English 11', g:'A-', l:'Honors', c:1},
+  {n:'AP US History', g:'B+', l:'AP / IB', c:1},
+  {n:'Precalculus', g:'A', l:'Regular', c:1},
+  {n:'Chemistry', g:'B', l:'Honors', c:1}
+]);
+function renderCourses(){
+  $('#courses').innerHTML = courses.map((c,i)=>`
+    <div class="course">
+      <input value="${esc(c.n)}" data-i="${i}" data-f="n" placeholder="Course name">
+      <select data-i="${i}" data-f="g">${Object.keys(GRADES).map(g=>`<option ${g===c.g?'selected':''}>${g}</option>`).join('')}</select>
+      <select data-i="${i}" data-f="l">${Object.keys(LEVELS).map(l=>`<option ${l===c.l?'selected':''}>${l}</option>`).join('')}</select>
+      <select data-i="${i}" data-f="c">${[0.5,1,2].map(v=>`<option ${v==c.c?'selected':''} value="${v}">${v} cr</option>`).join('')}</select>
+      <button class="x" data-del="${i}" title="Remove">×</button>
+    </div>`).join('') || '<p class="hint">No courses yet. Add one below!</p>';
+  calcGPA();
+}
+function calcGPA(){
+  let cr=0,u=0,w=0;
+  courses.forEach(c=>{const p=GRADES[c.g];cr+=+c.c;u+=p*c.c;w+=(p+(p>0?LEVELS[c.l]:0))*c.c});
+  $('#uw').textContent = cr?(u/cr).toFixed(2):'0.00';
+  $('#w').textContent = cr?(w/cr).toFixed(2):'0.00';
+  $('#cr').textContent = cr;
+  save('courses', courses);
+}
+$('#courses').addEventListener('input', e=>{
+  const t=e.target; if(t.dataset.i===undefined) return;
+  courses[t.dataset.i][t.dataset.f] = t.dataset.f==='c' ? +t.value : t.value;
+  calcGPA();
+});
+$('#courses').addEventListener('click', e=>{
+  if(e.target.dataset.del!==undefined){courses.splice(e.target.dataset.del,1);renderCourses()}
+});
+$('#addCourse').onclick=()=>{courses.push({n:'',g:'A',l:'Regular',c:1});renderCourses()};
+$('#clearCourses').onclick=()=>{courses=[];renderCourses()};
+renderCourses();
+
+/* ---------- Final calc ---------- */
+function calcFinal(){
+  const c=+$('#fc').value, w=+$('#fw').value/100, g=+$('#fg').value;
+  if(!w){$('#fr').textContent='Enter the final\'s weight.';return}
+  const need=(g-c*(1-w))/w;
+  let msg;
+  if(need<=0) msg=`🎉 You already have it. Even a <b>0%</b> keeps you at ${g}%+.`;
+  else if(need>100) msg=`😬 You'd need <b>${need.toFixed(1)}%</b>. That's over 100. Try a lower goal.`;
+  else msg=`You need at least <b>${need.toFixed(1)}%</b> on the final to finish with a ${g}%.`;
+  $('#fr').innerHTML=msg;
+}
+['#fc','#fw','#fg'].forEach(s=>$(s).addEventListener('input',calcFinal)); calcFinal();
+
+/* ---------- Focus timer ---------- */
+const MODES={Focus:25,'Short break':5,'Long break':15};
+let mode='Focus', left=MODES[mode]*60, running=false, iv=null;
+let stats = load('focus', {total:0, days:{}});
+const dayKey=(d=new Date())=>d.toISOString().slice(0,10);
+$('#modes').innerHTML=Object.keys(MODES).map(m=>`<button class="mode ${m===mode?'on':''}" data-m="${m}">${m}</button>`).join('');
+$('#modes').onclick=e=>{if(e.target.dataset.m){setMode(e.target.dataset.m)}};
+function setMode(m){
+  mode=m;stop();left=MODES[m]*60;
+  document.querySelectorAll('.mode').forEach(b=>b.classList.toggle('on',b.dataset.m===m));
+  drawTimer();
+}
+function drawTimer(){
+  const mm=String(Math.floor(left/60)).padStart(2,'0'), ss=String(left%60).padStart(2,'0');
+  $('#time').textContent=`${mm}:${ss}`;
+  document.title = running ? `${mm}:${ss} — Launchpad` : 'Launchpad — Junior Year, Handled';
+  const total=MODES[mode]*60;
+  $('#fgc').style.strokeDashoffset = 628.3*(1-left/total);
+}
+function stop(){running=false;clearInterval(iv);$('#startBtn').textContent='Start'}
+function beep(){try{const a=new AudioContext(),o=a.createOscillator(),g=a.createGain();o.connect(g);g.connect(a.destination);o.frequency.value=660;g.gain.setValueAtTime(.2,a.currentTime);g.gain.exponentialRampToValueAtTime(.001,a.currentTime+1);o.start();o.stop(a.currentTime+1)}catch{}}
+$('#startBtn').onclick=()=>{
+  if(running){stop();drawTimer();return}
+  running=true;$('#startBtn').textContent='Pause';
+  iv=setInterval(()=>{
+    left--;drawTimer();
+    if(left<=0){
+      stop();beep();
+      if(mode==='Focus'){
+        stats.total+=MODES.Focus;
+        stats.days[dayKey()]=(stats.days[dayKey()]||0)+1;
+        save('focus',stats);renderStats();
+        toast('Session complete! Take a break 🎉');
+        setMode('Short break');
+      } else { toast('Break over. Ready?'); setMode('Focus'); }
+    }
+  },1000);
+};
+$('#resetBtn').onclick=()=>{stop();left=MODES[mode]*60;drawTimer()};
+function renderStats(){
+  $('#sessToday').textContent=stats.days[dayKey()]||0;
+  $('#totalMin').textContent=stats.total;
+  let s=0,d=new Date();
+  if(!stats.days[dayKey(d)]) d.setDate(d.getDate()-1);
+  while(stats.days[dayKey(d)]){s++;d.setDate(d.getDate()-1)}
+  $('#streak').textContent=s;
+}
+$('#task').value=load('task','');$('#task').oninput=e=>save('task',e.target.value);
+drawTimer();renderStats();
+
+/* ---------- Colleges ---------- */
+let cols=load('cols',[]);
+function renderCols(){
+  const cnt={Reach:0,Target:0,Safety:0};cols.forEach(c=>cnt[c.c]++);
+  const t=cols.length||1;
+  $('#bal').innerHTML=`<i style="width:${cnt.Reach/t*100}%;background:var(--bad)"></i><i style="width:${cnt.Target/t*100}%;background:var(--warn)"></i><i style="width:${cnt.Safety/t*100}%;background:var(--good)"></i>`;
+  let h=`${cnt.Reach} Reach · ${cnt.Target} Target · ${cnt.Safety} Safety. `;
+  if(!cols.length) h='Add schools to see how balanced your list is.';
+  else if(!cnt.Safety) h+='⚠️ Add at least one Safety school.';
+  else if(!cnt.Target) h+='⚠️ Add some Target schools.';
+  else if(cols.length<6) h+='Aim for 6–10 schools total.';
+  else h+='✅ Looks like a healthy list!';
+  $('#balHint').textContent=h;
+  const sorted=[...cols].map((c,i)=>({...c,i})).sort((a,b)=>(a.d||'9').localeCompare(b.d||'9'));
+  $('#colList').innerHTML=sorted.map(c=>{
+    let dl='No deadline';
+    if(c.d){const days=Math.ceil((new Date(c.d+'T23:59')-new Date())/864e5);dl=days<0?'Deadline passed':`${days} days left<br>${c.d}`}
+    return `<div class="col"><span class="tag ${c.c}">${c.c}</span><span class="n">${esc(c.n)}</span><span class="d">${dl}</span><button class="x" data-del="${c.i}">×</button></div>`;
+  }).join('');
+  save('cols',cols);
+}
+$('#addCol').onclick=()=>{
+  const n=$('#cn').value.trim(); if(!n){toast('Enter a college name');return}
+  cols.push({n,c:$('#cc').value,d:$('#cd2').value});$('#cn').value='';renderCols();
+};
+$('#cn').addEventListener('keydown',e=>{if(e.key==='Enter')$('#addCol').click()});
+$('#colList').onclick=e=>{if(e.target.dataset.del!==undefined){cols.splice(e.target.dataset.del,1);renderCols()}};
+renderCols();
+
+/* ---------- Roadmap ---------- */
+const ROAD={
+  '🍂 Fall':['Meet your counselor and share your goals','Pick your 2–3 most important activities and go deeper','Register for PSAT/NMSQT (qualifies for National Merit)','Take a diagnostic SAT or ACT to find your baseline','Ask about dual enrollment or summer programs'],
+  '❄️ Winter':['Start an SAT/ACT study plan (30 min/day beats cramming)','Finish the PSAT and review your score report','Research 15–20 colleges and note what you like','Keep semester grades strong. Junior grades matter most.','Look for leadership roles in clubs for next year'],
+  '🌸 Spring':['Take the SAT or ACT (and plan a retake if needed)','Visit 2–3 colleges, even local ones for comparison','Ask 2 teachers for recommendations before they get busy','Study hard for AP exams in May','Build your list of Reach, Target, and Safety schools'],
+  '☀️ Summer':['Draft your Common App essay','Do something meaningful: job, volunteering, or a project','Research scholarships and note their deadlines','Create a professional email and tidy your social media','Make a senior-year application calendar']
+};
+let done=load('road',{});
+function renderRoad(){
+  let tot=0,dn=0;
+  $('#phases').innerHTML=Object.entries(ROAD).map(([p,items])=>{
+    const pd=items.filter((_,i)=>done[p+i]).length;
+    return `<div class="card phase"><h3>${p}<span>${pd}/${items.length}</span></h3>${items.map((t,i)=>{
+      tot++;if(done[p+i])dn++;
+      return `<label class="check ${done[p+i]?'done':''}"><input type="checkbox" data-k="${p+i}" ${done[p+i]?'checked':''}><span>${t}</span></label>`}).join('')}</div>`;
+  }).join('');
+  const pct=Math.round(dn/tot*100);
+  $('#pbar').style.width=pct+'%';
+  $('#ptxt').textContent=`${dn} of ${tot} tasks complete (${pct}%)`;
+  save('road',done);
+}
+$('#phases').addEventListener('change',e=>{
+  if(e.target.dataset.k){done[e.target.dataset.k]=e.target.checked;renderRoad();
+    if(Object.values(done).filter(Boolean).length===20)toast('🏆 Roadmap complete. Senior year, here you come!')}
+});
+renderRoad();
+</script>
+</body>
+</html>  
